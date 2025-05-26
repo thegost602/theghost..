@@ -1,0 +1,1325 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghost Anime - موقع الانمي الأول</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ff6b6b;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .anime-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .anime-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .anime-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .anime-card:hover .anime-image {
+            transform: scale(1.05);
+        }
+
+        .anime-info {
+            padding: 1.5rem;
+        }
+
+        .anime-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .anime-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stars {
+            color: #ffd700;
+            font-size: 1.2rem;
+        }
+
+        .rating-number {
+            background: #ff6b6b;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .anime-detail {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .detail-content {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #ff6b6b;
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            z-index: 1001;
+        }
+
+        .detail-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+
+        .detail-info {
+            padding: 2rem;
+        }
+
+        .detail-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #ff6b6b;
+        }
+
+        .episodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .episode-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .episode-card:hover {
+            background: rgba(255, 107, 107, 0.2);
+            border-color: #ff6b6b;
+            transform: scale(1.05);
+        }
+
+        .episode-card.active {
+            background: rgba(255, 107, 107, 0.3);
+            border-color: #ff6b6b;
+        }
+
+        .video-container {
+            margin-top: 1rem;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #000;
+            display: none;
+            min-height: 300px;
+        }
+
+        .video-container iframe {
+            width: 100%;
+            height: 400px;
+            border: none;
+            background: #fff;
+        }
+
+        .video-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            background: #1a1a2e;
+            color: #fff;
+            font-size: 1.2rem;
+        }
+
+        .episode-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .search-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            padding: 1rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+            @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .anime-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1rem;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .detail-content {
+                margin: 1rem;
+            }
+            
+            .episodes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .anime-image {
+                height: 250px;
+            }
+            
+            .detail-image {
+                height: 300px;
+            }
+            
+            .video-container iframe {
+                height: 250px;
+                background: #fff;
+            }
+            
+            .video-loading {
+                height: 250px;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #ff6b6b;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">👻 Ghost Anime</div>
+    </div>
+
+    <div class="container">
+        <div class="search-container">
+            <input type="text" class="search-box" placeholder="Search for your favorite anime..." id="searchBox">
+        </div>
+
+        <div class="anime-grid" id="animeGrid">
+        </div>
+    </div>
+
+    <div class="anime-detail" id="animeDetail">
+        <div class="detail-content">
+            <button class="close-btn" onclick="closeDetail()">&times;</button>
+            <img class="detail-image" id="detailImage" src="" alt="">
+            <div class="detail-info">
+                <h2 class="detail-title" id="detailTitle"></h2>
+                <div class="anime-rating" id="detailRating"></div>
+                <p id="detailDescription"></p>
+                <h3 style="margin: 2rem 0 1rem 0; color: #ff6b6b;">Episodes:</h3>
+                <div class="episodes-grid" id="episodesGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const animeData = [
+            {
+                id: 1,
+                title: "Wistoria: Wand and Sword",
+                image: "https://cdn.discordapp.com/attachments/1368715626679505047/1368715627401052370/Screenshot_------_com.png?ex=683247c3&is=6830f643&hm=01819dbef8bbfcf2947fcb5541747d2d168e427bbc6ea98a411b1fd1ae2f2e05&",
+                rating: 8.5,
+                description: "قصة الانمي : سعيًا للوفاء بوعده الذي قطعه لصديقة الطفولة، يلتحق ويل سيرفورت بأكاديمية ريغاردن السحرية بهدف الوصول إلى قمة العالم السحري هناك مشكلة واحدة فقط لا يمكنه استخدام السحر! هل ستكون مهارات سيفه هي المفتاح لفتح إمكاناته الحقيقية؟ ",
+                episodes: [
+                    { number: 1, title: " 1 حلقة", url: "https://server.sanime.net/Video/11537/1.mp4" },
+                    { number: 2, title: " 2 حلقة", url: "https://server.sanime.net/Video/11537/2.mp4" },
+                    { number: 3, title: " 3 حلقة", url: "https://server.sanime.net/Video/11537/3.mp4" },
+                    { number: 4, title: " 4 حلقة", url: "https://server.sanime.net/Video/11537/4.mp4" },
+                    { number: 5, title: " 5 حلقة", url: "https://server.sanime.net/Video/11537/5.mp4" },
+                    { number: 6, title: " 6(معطلة)", url: "" },
+                    { number: 7, title: " 7 حلقة", url: "https://server.sanime.net/Video/11537/7SD.mp4" },
+                    { number: 8, title: " 8 حلقة", url: "https://server.sanime.net/Video/11537/8.mp4" },
+                    { number: 9, title: " 9 حلقة", url: "https://server.sanime.net/Video/11537/9.mp4" },
+                    { number: 10, title: " 10 حلقة", url: "https://server.sanime.net/Video/11537/10.mp4" },
+                    { number: 11, title: " 11 حلقة", url: "https://server.sanime.net/Video/11537/11.mp4" },
+                ]
+            },
+            {
+                id: 2,
+                title: "Attack on Titan",
+                image: "https://cdn.discordapp.com/attachments/1375584914803523587/1376312829648310403/IMG_4391.jpg?ex=6834deb5&is=68338d35&hm=c15096d433978f7b545a1f2f879c4910d357f63b3c85a86fe0865e8b1a0d3fcf&",
+                rating: 9.0,
+                description: "قصة الانمي :",
+                episodes: [
+                    { number: 1, title: "حلقة 1", url: "https://example.com/aot1" },
+                    { number: 2, title: "حلقة 2", url: "https://example.com/aot2" },
+                    { number: 3, title: "حلقة 3 ", url: "https://example.com/aot3" }
+                ]
+            },
+            {
+                id: 3,
+                title: "Demon Slayer",
+                image: "https://cdn.discordapp.com/attachments/1375584914803523587/1376312830005088376/IMG_4390.jpg?ex=6834deb5&is=68338d35&hm=4d2e029ae96e2799947737ae64cdc24d3ac715e058f2a5c373beb94035cb213b&",
+                rating: 8.7,
+                description: " قصة الانمي : تتحدث القصة عن تانجيرو و هو الابنُ الأكبرُ لعائلته التي فقدت مُعيلها. وفي أحد الأيام يُخاصرُ تانجيرو بالذهاب إلى قريةٍ أخرى لبيع الفحم. ولكن نظرًا لحلولِ الليل وانتشارٍ إشاعاتٍ بوجودٍ شياطينَ تجولُ قريبًا في الجبال، ينتهي بهِ الحالُ بأن يبيتَ ليلتهُ في منزلِ شخص آخرَ بدلاً من العودةِ إلى منزله. وحيلَ يصلُ إلى منزلوِ في الصباحِ التالي، يجدُ مأساةً مريعةً في انتظّاره",
+                episodes: [
+                    
+  { number: 1, title: "حلقة 1", url: "https://server.sanime.net/Video3/529/1.mp4" },
+  { number: 2, title: "حلقة 2", url: "https://server.sanime.net/Video3/529/2.mp4" },
+  { number: 3, title: "حلقة 3", url: "https://server.sanime.net/Video3/529/3.mp4" },
+  { number: 4, title: "حلقة 4", url: "https://server.sanime.net/Video3/529/4.mp4" },
+  { number: 5, title: "حلقة 5", url: "https://server.sanime.net/Video3/529/5.mp4" },
+  { number: 6, title: "حلقة 6", url: "https://server.sanime.net/Video3/529/6.mp4" },
+  { number: 7, title: "حلقة 7", url: "https://server.sanime.net/Video3/529/7.mp4" },
+  { number: 8, title: "حلقة 8", url: "https://server.sanime.net/Video3/529/8.mp4" },
+  { number: 9, title: "حلقة 9", url: "https://server.sanime.net/Video3/529/9.mp4" },
+  { number: 10, title: "حلقة 10", url: "https://server.sanime.net/Video3/529/10.mp4" },
+  { number: 11, title: "حلقة 11", url: "https://server.sanime.net/Video3/529/11.mp4" },
+  { number: 12, title: "حلقة 12", url: "https://server.sanime.net/Video3/529/12.mp4" },
+  { number: 13, title: "حلقة 13", url: "https://server.sanime.net/Video3/529/13.mp4" },
+  { number: 14, title: "حلقة 14", url: "https://server.sanime.net/Video3/529/14.mp4" },
+  { number: 15, title: "حلقة 15", url: "https://server.sanime.net/Video3/529/15.mp4" },
+  { number: 16, title: "حلقة 16", url: "https://server.sanime.net/Video3/529/16.mp4" },
+  { number: 17, title: "حلقة 17", url: "https://server.sanime.net/Video3/529/17.mp4" },
+  { number: 18, title: "حلقة 18", url: "https://server.sanime.net/Video3/529/18.mp4" },
+  { number: 19, title: "حلقة 19", url: "https://server.sanime.net/Video3/529/19.mp4" },
+  { number: 20, title: "حلقة 20", url: "https://server.sanime.net/Video3/529/20.mp4" },
+  { number: 21, title: "حلقة 21", url: "https://server.sanime.net/Video3/529/21.mp4" },
+  { number: 22, title: "حلقة 22", url: "https://server.sanime.net/Video3/529/22.mp4" },
+  { number: 23, title: "حلقة 23", url: "https://server.sanime.net/Video3/529/23.mp4" },
+  { number: 24, title: "حلقة 24", url: "https://server.sanime.net/Video3/529/24.mp4" },
+  { number: 25, title: "حلقة 25", url: "https://server.sanime.net/Video3/529/25.mp4" },
+  { number: 26, title: "حلقة 26", url: "https://server.sanime.net/Video3/529/26.mp4" },
+                ]
+            },
+            {
+                id: 4,
+                title: "One Piece",
+                image: "https://cdn.discordapp.com/attachments/1375584914803523587/1376312830516531380/IMG_4392.jpg?ex=6834deb5&is=68338d35&hm=0b39657d3c4962898a26466f279aedb6407c50b25780e40aebe5a8db33d6682f&",
+                rating: 9.1,
+                description: "قصة الانمي :",
+                episodes: [
+                    { number: 1, title: "حلقة 1 ", url: "https://example.com/op1" },
+                    { number: 2, title: "حلقة 2", url: "https://example.com/op2" }
+                ]
+            },
+            {
+                id: 5,
+                title: "Naruto",
+                image: "https://cdn.discordapp.com/attachments/1375584914803523587/1376312830281908274/IMG_4389.jpg?ex=6834deb5&is=68338d35&hm=720715343e0a84e9080600a622a3d820b19f9bfab3b8e924eb35a416ee0db2c1&",
+                rating: 8.4,
+                description: "قصة الانمي :",
+                episodes: [
+  { number: 1, title: "حلقة 1", url: "https://server.sanime.net/Video3/529/1.mp4" },
+  { number: 2, title: "حلقة 2", url: "https://server.sanime.net/Video3/529/2.mp4" },
+  { number: 3, title: "حلقة 3", url: "https://server.sanime.net/Video3/529/3.mp4" },
+  { number: 4, title: "حلقة 4", url: "https://server.sanime.net/Video3/529/4.mp4" },
+  { number: 5, title: "حلقة 5", url: "https://server.sanime.net/Video3/529/5.mp4" },
+  { number: 6, title: "حلقة 6", url: "https://server.sanime.net/Video3/529/6.mp4" },
+  { number: 7, title: "حلقة 7", url: "https://server.sanime.net/Video3/529/7.mp4" },
+  { number: 8, title: "حلقة 8", url: "https://server.sanime.net/Video3/529/8.mp4" },
+  { number: 9, title: "حلقة 9", url: "https://server.sanime.net/Video3/529/9.mp4" },
+  { number: 10, title: "حلقة 10", url: "https://server.sanime.net/Video3/529/10.mp4" },
+  { number: 11, title: "حلقة 11", url: "https://server.sanime.net/Video3/529/11.mp4" },
+  { number: 12, title: "حلقة 12", url: "https://server.sanime.net/Video3/529/12.mp4" },
+  { number: 13, title: "حلقة 13", url: "https://server.sanime.net/Video3/529/13.mp4" },
+  { number: 14, title: "حلقة 14", url: "https://server.sanime.net/Video3/529/14.mp4" },
+  { number: 15, title: "حلقة 15", url: "https://server.sanime.net/Video3/529/15.mp4" },
+  { number: 16, title: "حلقة 16", url: "https://server.sanime.net/Video3/529/16.mp4" },
+  { number: 17, title: "حلقة 17", url: "https://server.sanime.net/Video3/529/17.mp4" },
+  { number: 18, title: "حلقة 18", url: "https://server.sanime.net/Video3/529/18.mp4" },
+  { number: 19, title: "حلقة 19", url: "https://server.sanime.net/Video3/529/19.mp4" },
+  { number: 20, title: "حلقة 20", url: "https://server.sanime.net/Video3/529/20.mp4" },
+  { number: 21, title: "حلقة 21", url: "https://server.sanime.net/Video3/529/21.mp4" },
+  { number: 22, title: "حلقة 22", url: "https://server.sanime.net/Video3/529/22.mp4" },
+  { number: 23, title: "حلقة 23", url: "https://server.sanime.net/Video3/529/23.mp4" },
+  { number: 24, title: "حلقة 24", url: "https://server.sanime.net/Video3/529/24.mp4" },
+  { number: 25, title: "حلقة 25", url: "https://server.sanime.net/Video3/529/25.mp4" },
+  { number: 26, title: "حلقة 26", url: "https://server.sanime.net/Video3/529/26.mp4" },
+  { number: 27, title: "حلقة 27", url: "https://server.sanime.net/Video3/529/27.mp4" },
+  { number: 28, title: "حلقة 28", url: "https://server.sanime.net/Video3/529/28.mp4" },
+  { number: 29, title: "حلقة 29", url: "https://server.sanime.net/Video3/529/29.mp4" },
+  { number: 30, title: "حلقة 30", url: "https://server.sanime.net/Video3/529/30.mp4" },
+  { number: 31, title: "حلقة 31", url: "https://server.sanime.net/Video3/529/31.mp4" },
+  { number: 32, title: "حلقة 32", url: "https://server.sanime.net/Video3/529/32.mp4" },
+  { number: 33, title: "حلقة 33", url: "https://server.sanime.net/Video3/529/33.mp4" },
+  { number: 34, title: "حلقة 34", url: "https://server.sanime.net/Video3/529/34.mp4" },
+  { number: 35, title: "حلقة 35", url: "https://server.sanime.net/Video3/529/35.mp4" },
+  { number: 36, title: "حلقة 36", url: "https://server.sanime.net/Video3/529/36.mp4" },
+  { number: 37, title: "حلقة 37", url: "https://server.sanime.net/Video3/529/37.mp4" },
+  { number: 38, title: "حلقة 38", url: "https://server.sanime.net/Video3/529/38.mp4" },
+  { number: 39, title: "حلقة 39", url: "https://server.sanime.net/Video3/529/39.mp4" },
+  { number: 40, title: "حلقة 40", url: "https://server.sanime.net/Video3/529/40.mp4" },
+  { number: 41, title: "حلقة 41", url: "https://server.sanime.net/Video3/529/41.mp4" },
+  { number: 42, title: "حلقة 42", url: "https://server.sanime.net/Video3/529/42.mp4" },
+  { number: 43, title: "حلقة 43", url: "https://server.sanime.net/Video3/529/43.mp4" },
+  { number: 44, title: "حلقة 44", url: "https://server.sanime.net/Video3/529/44.mp4" },
+  { number: 45, title: "حلقة 45", url: "https://server.sanime.net/Video3/529/45.mp4" },
+  { number: 46, title: "حلقة 46", url: "https://server.sanime.net/Video3/529/46.mp4" },
+  { number: 47, title: "حلقة 47", url: "https://server.sanime.net/Video3/529/47.mp4" },
+  { number: 48, title: "حلقة 48", url: "https://server.sanime.net/Video3/529/48.mp4" },
+  { number: 49, title: "حلقة 49", url: "https://server.sanime.net/Video3/529/49.mp4" },
+  { number: 50, title: "حلقة 50", url: "https://server.sanime.net/Video3/529/50.mp4" },
+  { number: 51, title: "حلقة 51", url: "https://server.sanime.net/Video3/529/51.mp4" },
+  { number: 52, title: "حلقة 52", url: "https://server.sanime.net/Video3/529/52.mp4" },
+  { number: 53, title: "حلقة 53", url: "https://server.sanime.net/Video3/529/53.mp4" },
+  { number: 54, title: "حلقة 54", url: "https://server.sanime.net/Video3/529/54.mp4" },
+  { number: 55, title: "حلقة 55", url: "https://server.sanime.net/Video3/529/55.mp4" },
+  { number: 56, title: "حلقة 56", url: "https://server.sanime.net/Video3/529/56.mp4" },
+  { number: 57, title: "حلقة 57", url: "https://server.sanime.net/Video3/529/57.mp4" },
+  { number: 58, title: "حلقة 58", url: "https://server.sanime.net/Video3/529/58.mp4" },
+  { number: 59, title: "حلقة 59", url: "https://server.sanime.net/Video3/529/59.mp4" },
+  { number: 60, title: "حلقة 60", url: "https://server.sanime.net/Video3/529/60.mp4" },
+  { number: 61, title: "حلقة 61", url: "https://server.sanime.net/Video3/529/61.mp4" },
+  { number: 62, title: "حلقة 62", url: "https://server.sanime.net/Video3/529/62.mp4" },
+  { number: 63, title: "حلقة 63", url: "https://server.sanime.net/Video3/529/63.mp4" },
+  { number: 64, title: "حلقة 64", url: "https://server.sanime.net/Video3/529/64.mp4" },
+  { number: 65, title: "حلقة 65", url: "https://server.sanime.net/Video3/529/65.mp4" },
+  { number: 66, title: "حلقة 66", url: "https://server.sanime.net/Video3/529/66.mp4" },
+  { number: 67, title: "حلقة 67", url: "https://server.sanime.net/Video3/529/67.mp4" },
+  { number: 68, title: "حلقة 68", url: "https://server.sanime.net/Video3/529/68.mp4" },
+  { number: 69, title: "حلقة 69", url: "https://server.sanime.net/Video3/529/69.mp4" },
+  { number: 70, title: "حلقة 70", url: "https://server.sanime.net/Video3/529/70.mp4" },
+  { number: 71, title: "حلقة 71", url: "https://server.sanime.net/Video3/529/71.mp4" },
+  { number: 72, title: "حلقة 72", url: "https://server.sanime.net/Video3/529/72.mp4" },
+  { number: 73, title: "حلقة 73", url: "https://server.sanime.net/Video3/529/73.mp4" },
+  { number: 74, title: "حلقة 74", url: "https://server.sanime.net/Video3/529/74.mp4" },
+  { number: 75, title: "حلقة 75", url: "https://server.sanime.net/Video3/529/75.mp4" },
+  { number: 76, title: "حلقة 76", url: "https://server.sanime.net/Video3/529/76.mp4" },
+  { number: 77, title: "حلقة 77", url: "https://server.sanime.net/Video3/529/77.mp4" },
+  { number: 78, title: "حلقة 78", url: "https://server.sanime.net/Video3/529/78.mp4" },
+  { number: 79, title: "حلقة 79", url: "https://server.sanime.net/Video3/529/79.mp4" },
+  { number: 80, title: "حلقة 80", url: "https://server.sanime.net/Video3/529/80.mp4" },
+  { number: 81, title: "حلقة 81", url: "https://server.sanime.net/Video3/529/81.mp4" },
+  { number: 82, title: "حلقة 82", url: "https://server.sanime.net/Video3/529/82.mp4" },
+  { number: 83, title: "حلقة 83", url: "https://server.sanime.net/Video3/529/83.mp4" },
+  { number: 84, title: "حلقة 84", url: "https://server.sanime.net/Video3/529/84.mp4" },
+  { number: 85, title: "حلقة 85", url: "https://server.sanime.net/Video3/529/85.mp4" },
+  { number: 86, title: "حلقة 86", url: "https://server.sanime.net/Video3/529/86.mp4" },
+  { number: 87, title: "حلقة 87", url: "https://server.sanime.net/Video3/529/87.mp4" },
+  { number: 88, title: "حلقة 88", url: "https://server.sanime.net/Video3/529/88.mp4" },
+  { number: 89, title: "حلقة 89", url: "https://server.sanime.net/Video3/529/89.mp4" },
+  { number: 90, title: "حلقة 90", url: "https://server.sanime.net/Video3/529/90.mp4" },
+  { number: 91, title: "حلقة 91", url: "https://server.sanime.net/Video3/529/91.mp4" },
+  { number: 92, title: "حلقة 92", url: "https://server.sanime.net/Video3/529/92.mp4" },
+  { number: 93, title: "حلقة 93", url: "https://server.sanime.net/Video3/529/93.mp4" },
+  { number: 94, title: "حلقة 94", url: "https://server.sanime.net/Video3/529/94.mp4" },
+  { number: 95, title: "حلقة 95", url: "https://server.sanime.net/Video3/529/95.mp4" },
+  { number: 96, title: "حلقة 96", url: "https://server.sanime.net/Video3/529/96.mp4" },
+  { number: 97, title: "حلقة 97", url: "https://server.sanime.net/Video3/529/97.mp4" },
+  { number: 98, title: "حلقة 98", url: "https://server.sanime.net/Video3/529/98.mp4" },
+  { number: 99, title: "حلقة 99", url: "https://server.sanime.net/Video3/529/99.mp4" },
+  { number: 100, title: "حلقة 100", url: "https://server.sanime.net/Video3/529/100.mp4" },
+  { number: 101, title: "حلقة 101", url: "https://server.sanime.net/Video3/529/101.mp4" },
+  { number: 102, title: "حلقة 102", url: "https://server.sanime.net/Video3/529/102.mp4" },
+  { number: 103, title: "حلقة 103", url: "https://server.sanime.net/Video3/529/103.mp4" },
+  { number: 104, title: "حلقة 104", url: "https://server.sanime.net/Video3/529/104.mp4" },
+  { number: 105, title: "حلقة 105", url: "https://server.sanime.net/Video3/529/105.mp4" },
+  { number: 106, title: "حلقة 106", url: "https://server.sanime.net/Video3/529/106.mp4" },
+  { number: 107, title: "حلقة 107", url: "https://server.sanime.net/Video3/529/107.mp4" },
+  { number: 108, title: "حلقة 108", url: "https://server.sanime.net/Video3/529/108.mp4" },
+  { number: 109, title: "حلقة 109", url: "https://server.sanime.net/Video3/529/109.mp4" },
+  { number: 110, title: "حلقة 110", url: "https://server.sanime.net/Video3/529/110.mp4" },
+  { number: 111, title: "حلقة 111", url: "https://server.sanime.net/Video3/529/111.mp4" },
+  { number: 112, title: "حلقة 112", url: "https://server.sanime.net/Video3/529/112.mp4" },
+  { number: 113, title: "حلقة 113", url: "https://server.sanime.net/Video3/529/113.mp4" },
+  { number: 114, title: "حلقة 114", url: "https://server.sanime.net/Video3/529/114.mp4" },
+  { number: 115, title: "حلقة 115", url: "https://server.sanime.net/Video3/529/115.mp4" },
+  { number: 116, title: "حلقة 116", url: "https://server.sanime.net/Video3/529/116.mp4" },
+  { number: 117, title: "حلقة 117", url: "https://server.sanime.net/Video3/529/117.mp4" },
+  { number: 118, title: "حلقة 118", url: "https://server.sanime.net/Video3/529/118.mp4" },
+  { number: 119, title: "حلقة 119", url: "https://server.sanime.net/Video3/529/119.mp4" },
+  { number: 120, title: "حلقة 120", url: "https://server.sanime.net/Video3/529/120.mp4" },
+  { number: 121, title: "حلقة 121", url: "https://server.sanime.net/Video3/529/121.mp4" },
+  { number: 122, title: "حلقة 122", url: "https://server.sanime.net/Video3/529/122.mp4" },
+  { number: 123, title: "حلقة 123", url: "https://server.sanime.net/Video3/529/123.mp4" },
+  { number: 124, title: "حلقة 124", url: "https://server.sanime.net/Video3/529/124.mp4" },
+  { number: 125, title: "حلقة 125", url: "https://server.sanime.net/Video3/529/125.mp4" },
+  { number: 126, title: "حلقة 126", url: "https://server.sanime.net/Video3/529/126.mp4" },
+  { number: 127, title: "حلقة 127", url: "https://server.sanime.net/Video3/529/127.mp4" },
+  { number: 128, title: "حلقة 128", url: "https://server.sanime.net/Video3/529/128.mp4" },
+  { number: 129, title: "حلقة 129", url: "https://server.sanime.net/Video3/529/129.mp4" },
+  { number: 130, title: "حلقة 130", url: "https://server.sanime.net/Video3/529/130.mp4" },
+  { number: 131, title: "حلقة 131", url: "https://server.sanime.net/Video3/529/131.mp4" },
+  { number: 132, title: "حلقة 132", url: "https://server.sanime.net/Video3/529/132.mp4" },
+  { number: 133, title: "حلقة 133", url: "https://server.sanime.net/Video3/529/133.mp4" },
+  { number: 134, title: "حلقة 134", url: "https://server.sanime.net/Video3/529/134.mp4" },
+  { number: 135, title: "حلقة 135", url: "https://server.sanime.net/Video3/529/135.mp4" },
+  { number: 136, title: "حلقة 136", url: "https://server.sanime.net/Video3/529/136.mp4" },
+  { number: 137, title: "حلقة 137", url: "https://server.sanime.net/Video3/529/137.mp4" },
+  { number: 138, title: "حلقة 138", url: "https://server.sanime.net/Video3/529/138.mp4" },
+  { number: 139, title: "حلقة 139", url: "https://server.sanime.net/Video3/529/139.mp4" },
+  { number: 140, title: "حلقة 140", url: "https://server.sanime.net/Video3/529/140.mp4" },
+  { number: 141, title: "حلقة 141", url: "https://server.sanime.net/Video3/529/141.mp4" },
+  { number: 142, title: "حلقة 142", url: "https://server.sanime.net/Video3/529/142.mp4" },
+  { number: 143, title: "حلقة 143", url: "https://server.sanime.net/Video3/529/143.mp4" },
+  { number: 144, title: "حلقة 144", url: "https://server.sanime.net/Video3/529/144.mp4" },
+  { number: 145, title: "حلقة 145", url: "https://server.sanime.net/Video3/529/145.mp4" },
+  { number: 146, title: "حلقة 146", url: "https://server.sanime.net/Video3/529/146.mp4" },
+  { number: 147, title: "حلقة 147", url: "https://server.sanime.net/Video3/529/147.mp4" },
+  { number: 148, title: "حلقة 148", url: "https://server.sanime.net/Video3/529/148.mp4" },
+  { number: 149, title: "حلقة 149", url: "https://server.sanime.net/Video3/529/149.mp4" },
+  { number: 150, title: "حلقة 150", url: "https://server.sanime.net/Video3/529/150.mp4" },
+  { number: 151, title: "حلقة 151", url: "https://server.sanime.net/Video3/529/151.mp4" },
+  { number: 152, title: "حلقة 152", url: "https://server.sanime.net/Video3/529/152.mp4" },
+  { number: 153, title: "حلقة 153", url: "https://server.sanime.net/Video3/529/153.mp4" },
+  { number: 154, title: "حلقة 154", url: "https://server.sanime.net/Video3/529/154.mp4" },
+  { number: 155, title: "حلقة 155", url: "https://server.sanime.net/Video3/529/155.mp4" },
+  { number: 156, title: "حلقة 156", url: "https://server.sanime.net/Video3/529/156.mp4" },
+  { number: 157, title: "حلقة 157", url: "https://server.sanime.net/Video3/529/157.mp4" },
+  { number: 158, title: "حلقة 158", url: "https://server.sanime.net/Video3/529/158.mp4" },
+  { number: 159, title: "حلقة 159", url: "https://server.sanime.net/Video3/529/159.mp4" },
+  { number: 160, title: "حلقة 160", url: "https://server.sanime.net/Video3/529/160.mp4" },
+  { number: 161, title: "حلقة 161", url: "https://server.sanime.net/Video3/529/161.mp4" },
+  { number: 162, title: "حلقة 162", url: "https://server.sanime.net/Video3/529/162.mp4" },
+  { number: 163, title: "حلقة 163", url: "https://server.sanime.net/Video3/529/163.mp4" },
+  { number: 164, title: "حلقة 164", url: "https://server.sanime.net/Video3/529/164.mp4" },
+  { number: 165, title: "حلقة 165", url: "https://server.sanime.net/Video3/529/165.mp4" },
+  { number: 166, title: "حلقة 166", url: "https://server.sanime.net/Video3/529/166.mp4" },
+  { number: 167, title: "حلقة 167", url: "https://server.sanime.net/Video3/529/167.mp4" },
+  { number: 168, title: "حلقة 168", url: "https://server.sanime.net/Video3/529/168.mp4" },
+  { number: 169, title: "حلقة 169", url: "https://server.sanime.net/Video3/529/169.mp4" },
+  { number: 170, title: "حلقة 170", url: "https://server.sanime.net/Video3/529/170.mp4" },
+  { number: 171, title: "حلقة 171", url: "https://server.sanime.net/Video3/529/171.mp4" },
+  { number: 172, title: "حلقة 172", url: "https://server.sanime.net/Video3/529/172.mp4" },
+  { number: 173, title: "حلقة 173", url: "https://server.sanime.net/Video3/529/173.mp4" },
+  { number: 174, title: "حلقة 174", url: "https://server.sanime.net/Video3/529/174.mp4" },
+  { number: 175, title: "حلقة 175", url: "https://server.sanime.net/Video3/529/175.mp4" },
+  { number: 176, title: "حلقة 176", url: "https://server.sanime.net/Video3/529/176.mp4" },
+  { number: 177, title: "حلقة 177", url: "https://server.sanime.net/Video3/529/177.mp4" },
+  { number: 178, title: "حلقة 178", url: "https://server.sanime.net/Video3/529/178.mp4" },
+  { number: 179, title: "حلقة 179", url: "https://server.sanime.net/Video3/529/179.mp4" },
+  { number: 180, title: "حلقة 180", url: "https://server.sanime.net/Video3/529/180.mp4" },
+  { number: 181, title: "حلقة 181", url: "https://server.sanime.net/Video3/529/181.mp4" },
+  { number: 182, title: "حلقة 182", url: "https://server.sanime.net/Video3/529/182.mp4" },
+  { number: 183, title: "حلقة 183", url: "https://server.sanime.net/Video3/529/183.mp4" },
+  { number: 184, title: "حلقة 184", url: "https://server.sanime.net/Video3/529/184.mp4" },
+  { number: 185, title: "حلقة 185", url: "https://server.sanime.net/Video3/529/185.mp4" },
+  { number: 186, title: "حلقة 186", url: "https://server.sanime.net/Video3/529/186.mp4" },
+  { number: 187, title: "حلقة 187", url: "https://server.sanime.net/Video3/529/187.mp4" },
+  { number: 188, title: "حلقة 188", url: "https://server.sanime.net/Video3/529/188.mp4" },
+  { number: 189, title: "حلقة 189", url: "https://server.sanime.net/Video3/529/189.mp4" },
+  { number: 190, title: "حلقة 190", url: "https://server.sanime.net/Video3/529/190.mp4" },
+  { number: 191, title: "حلقة 191", url: "https://server.sanime.net/Video3/529/191.mp4" },
+  { number: 192, title: "حلقة 192", url: "https://server.sanime.net/Video3/529/192.mp4" },
+  { number: 193, title: "حلقة 193", url: "https://server.sanime.net/Video3/529/193.mp4" },
+  { number: 194, title: "حلقة 194", url: "https://server.sanime.net/Video3/529/194.mp4" },
+  { number: 195, title: "حلقة 195", url: "https://server.sanime.net/Video3/529/195.mp4" },
+  { number: 196, title: "حلقة 196", url: "https://server.sanime.net/Video3/529/196.mp4" },
+  { number: 197, title: "حلقة 197", url: "https://server.sanime.net/Video3/529/197.mp4" },
+  { number: 198, title: "حلقة 198", url: "https://server.sanime.net/Video3/529/198.mp4" },
+  { number: 199, title: "حلقة 199", url: "https://server.sanime.net/Video3/529/199.mp4" },
+  { number: 200, title: "حلقة 200", url: "https://server.sanime.net/Video3/529/200.mp4" },
+  { number: 201, title: "حلقة 201", url: "https://server.sanime.net/Video3/529/201.mp4" },
+  { number: 202, title: "حلقة 202", url: "https://server.sanime.net/Video3/529/202.mp4" },
+  { number: 203, title: "حلقة 203", url: "https://server.sanime.net/Video3/529/203.mp4" },
+  { number: 204, title: "حلقة 204", url: "https://server.sanime.net/Video3/529/204.mp4" },
+  { number: 205, title: "حلقة 205", url: "https://server.sanime.net/Video3/529/205.mp4" },
+  { number: 206, title: "حلقة 206", url: "https://server.sanime.net/Video3/529/206.mp4" },
+  { number: 207, title: "حلقة 207", url: "https://server.sanime.net/Video3/529/207.mp4" },
+  { number: 208, title: "حلقة 208", url: "https://server.sanime.net/Video3/529/208.mp4" },
+  { number: 209, title: "حلقة 209", url: "https://server.sanime.net/Video3/529/209.mp4" },
+  { number: 210, title: "حلقة 210", url: "https://server.sanime.net/Video3/529/210.mp4" },
+  { number: 211, title: "حلقة 211", url: "https://server.sanime.net/Video3/529/211.mp4" },
+  { number: 212, title: "حلقة 212", url: "https://server.sanime.net/Video3/529/212.mp4" },
+  { number: 213, title: "حلقة 213", url: "https://server.sanime.net/Video3/529/213.mp4" },
+  { number: 214, title: "حلقة 214", url: "https://server.sanime.net/Video3/529/214.mp4" },
+  { number: 215, title: "حلقة 215", url: "https://server.sanime.net/Video3/529/215.mp4" },
+  { number: 216, title: "حلقة 216", url: "https://server.sanime.net/Video3/529/216.mp4" },
+  { number: 217, title: "حلقة 217", url: "https://server.sanime.net/Video3/529/217.mp4" },
+  { number: 218, title: "حلقة 218", url: "https://server.sanime.net/Video3/529/218.mp4" },
+  { number: 219, title: "حلقة 219", url: "https://server.sanime.net/Video3/529/219.mp4" },
+  { number: 220, title: "حلقة 220", url: "https://server.sanime.net/Video3/529/220.mp4" },
+                ]
+            },
+            {
+                id: 6,
+                title: "Dragon Ball Z",
+                image: "https://cdn.discordapp.com/attachments/1375584914803523587/1376313621356875846/IMG_4400.jpg?ex=6834df72&is=68338df2&hm=36df7d38172ef457c7fefe6769b8589797e10be249e23a4e4c0b3dca54ddefc2&",
+                rating: 8.8,
+                description: "  قصة انمي : يعود جوكو مجدداً لكن هذه المرة لديه ابن ويدعى جوهان، ولكن لن تظل الأمور بخير للأبد حيث يكمل مغامراته ويواجه العديد من الأعداء، كما يصنع العديد من الأصدقاء، ويحاول ابقاء وقت لعائلته الجديدة، فهل سينجح في ذلك ؟..",
+                episodes: [
+                    
+  { number: 1, title: "حلقة 1", url: "https://server.sanime.net/Video3/659/1.mp4" },
+  { number: 2, title: "حلقة 2", url: "https://server.sanime.net/Video3/659/2.mp4" },
+  { number: 3, title: "حلقة 3", url: "https://server.sanime.net/Video3/659/3.mp4" },
+  { number: 4, title: "حلقة 4", url: "https://server.sanime.net/Video3/659/4.mp4" },
+  { number: 5, title: "حلقة 5", url: "https://server.sanime.net/Video3/659/5.mp4" },
+  { number: 6, title: "حلقة 6", url: "https://server.sanime.net/Video3/659/6.mp4" },
+  { number: 7, title: "حلقة 7", url: "https://server.sanime.net/Video3/659/7.mp4" },
+  { number: 8, title: "حلقة 8", url: "https://server.sanime.net/Video3/659/8.mp4" },
+  { number: 9, title: "حلقة 9", url: "https://server.sanime.net/Video3/659/9.mp4" },
+  { number: 10, title: "حلقة 10", url: "https://server.sanime.net/Video3/659/10.mp4" },
+  { number: 11, title: "حلقة 11", url: "https://server.sanime.net/Video3/659/11.mp4" },
+  { number: 12, title: "حلقة 12", url: "https://server.sanime.net/Video3/659/12.mp4" },
+  { number: 13, title: "حلقة 13", url: "https://server.sanime.net/Video3/659/13.mp4" },
+  { number: 14, title: "حلقة 14", url: "https://server.sanime.net/Video3/659/14.mp4" },
+  { number: 15, title: "حلقة 15", url: "https://server.sanime.net/Video3/659/15.mp4" },
+  { number: 16, title: "حلقة 16", url: "https://server.sanime.net/Video3/659/16.mp4" },
+  { number: 17, title: "حلقة 17", url: "https://server.sanime.net/Video3/659/17.mp4" },
+  { number: 18, title: "حلقة 18", url: "https://server.sanime.net/Video3/659/18.mp4" },
+  { number: 19, title: "حلقة 19", url: "https://server.sanime.net/Video3/659/19.mp4" },
+  { number: 20, title: "حلقة 20", url: "https://server.sanime.net/Video3/659/20.mp4" },
+  { number: 21, title: "حلقة 21", url: "https://server.sanime.net/Video3/659/21.mp4" },
+{ number: 22, title: "حلقة 22", url: "https://server.sanime.net/Video3/659/22.mp4" },
+{ number: 23, title: "حلقة 23", url: "https://server.sanime.net/Video3/659/23.mp4" },
+{ number: 24, title: "حلقة 24", url: "https://server.sanime.net/Video3/659/24.mp4" },
+{ number: 25, title: "حلقة 25", url: "https://server.sanime.net/Video3/659/25.mp4" },
+{ number: 26, title: "حلقة 26", url: "https://server.sanime.net/Video3/659/26.mp4" },
+{ number: 27, title: "حلقة 27", url: "https://server.sanime.net/Video3/659/27.mp4" },
+{ number: 28, title: "حلقة 28", url: "https://server.sanime.net/Video3/659/28.mp4" },
+{ number: 29, title: "حلقة 29", url: "https://server.sanime.net/Video3/659/29.mp4" },
+{ number: 30, title: "حلقة 30", url: "https://server.sanime.net/Video3/659/30.mp4" },
+{ number: 31, title: "حلقة 31", url: "https://server.sanime.net/Video3/659/31.mp4" },
+{ number: 32, title: "حلقة 32", url: "https://server.sanime.net/Video3/659/32.mp4" },
+{ number: 33, title: "حلقة 33", url: "https://server.sanime.net/Video3/659/33.mp4" },
+{ number: 34, title: "حلقة 34", url: "https://server.sanime.net/Video3/659/34.mp4" },
+{ number: 35, title: "حلقة 35", url: "https://server.sanime.net/Video3/659/35.mp4" },
+{ number: 36, title: "حلقة 36", url: "https://server.sanime.net/Video3/659/36.mp4" },
+{ number: 37, title: "حلقة 37", url: "https://server.sanime.net/Video3/659/37.mp4" },
+{ number: 38, title: "حلقة 38", url: "https://server.sanime.net/Video3/659/38.mp4" },
+{ number: 39, title: "حلقة 39", url: "https://server.sanime.net/Video3/659/39.mp4" },
+{ number: 40, title: "حلقة 40", url: "https://server.sanime.net/Video3/659/40.mp4" },
+{ number: 41, title: "حلقة 41", url: "https://server.sanime.net/Video3/659/41.mp4" },
+{ number: 42, title: "حلقة 42", url: "https://server.sanime.net/Video3/659/42.mp4" },
+{ number: 43, title: "حلقة 43", url: "https://server.sanime.net/Video3/659/43.mp4" },
+{ number: 44, title: "حلقة 44", url: "https://server.sanime.net/Video3/659/44.mp4" },
+{ number: 45, title: "حلقة 45", url: "https://server.sanime.net/Video3/659/45.mp4" },
+{ number: 46, title: "حلقة 46", url: "https://server.sanime.net/Video3/659/46.mp4" },
+{ number: 47, title: "حلقة 47", url: "https://server.sanime.net/Video3/659/47.mp4" },
+{ number: 48, title: "حلقة 48", url: "https://server.sanime.net/Video3/659/48.mp4" },
+{ number: 49, title: "حلقة 49", url: "https://server.sanime.net/Video3/659/49.mp4" },
+{ number: 50, title: "حلقة 50", url: "https://server.sanime.net/Video3/659/50.mp4" },
+{ number: 51, title: "حلقة 51", url: "https://server.sanime.net/Video3/659/51.mp4" },
+{ number: 52, title: "حلقة 52", url: "https://server.sanime.net/Video3/659/52.mp4" },
+{ number: 53, title: "حلقة 53", url: "https://server.sanime.net/Video3/659/53.mp4" },
+{ number: 54, title: "حلقة 54", url: "https://server.sanime.net/Video3/659/54.mp4" },
+{ number: 55, title: "حلقة 55", url: "https://server.sanime.net/Video3/659/55.mp4" },
+{ number: 56, title: "حلقة 56", url: "https://server.sanime.net/Video3/659/56.mp4" },
+{ number: 57, title: "حلقة 57", url: "https://server.sanime.net/Video3/659/57.mp4" },
+{ number: 58, title: "حلقة 58", url: "https://server.sanime.net/Video3/659/58.mp4" },
+{ number: 59, title: "حلقة 59", url: "https://server.sanime.net/Video3/659/59.mp4" },
+{ number: 60, title: "حلقة 60", url: "https://server.sanime.net/Video3/659/60.mp4" },
+  { number: 61, title: "حلقة 61", url: "https://server.sanime.net/Video3/659/61.mp4" },
+  { number: 62, title: "حلقة 62", url: "https://server.sanime.net/Video3/659/62.mp4" },
+  { number: 63, title: "حلقة 63", url: "https://server.sanime.net/Video3/659/63.mp4" },
+  { number: 64, title: "حلقة 64", url: "https://server.sanime.net/Video3/659/64.mp4" },
+  { number: 65, title: "حلقة 65", url: "https://server.sanime.net/Video3/659/65.mp4" },
+  { number: 66, title: "حلقة 66", url: "https://server.sanime.net/Video3/659/66.mp4" },
+  { number: 67, title: "حلقة 67", url: "https://server.sanime.net/Video3/659/67.mp4" },
+  { number: 68, title: "حلقة 68", url: "https://server.sanime.net/Video3/659/68.mp4" },
+  { number: 69, title: "حلقة 69", url: "https://server.sanime.net/Video3/659/69.mp4" },
+  { number: 70, title: "حلقة 70", url: "https://server.sanime.net/Video3/659/70.mp4" },
+  { number: 71, title: "حلقة 71", url: "https://server.sanime.net/Video3/659/71.mp4" },
+  { number: 72, title: "حلقة 72", url: "https://server.sanime.net/Video3/659/72.mp4" },
+  { number: 73, title: "حلقة 73", url: "https://server.sanime.net/Video3/659/73.mp4" },
+  { number: 74, title: "حلقة 74", url: "https://server.sanime.net/Video3/659/74.mp4" },
+  { number: 75, title: "حلقة 75", url: "https://server.sanime.net/Video3/659/75.mp4" },
+  { number: 76, title: "حلقة 76", url: "https://server.sanime.net/Video3/659/76.mp4" },
+  { number: 77, title: "حلقة 77", url: "https://server.sanime.net/Video3/659/77.mp4" },
+  { number: 78, title: "حلقة 78", url: "https://server.sanime.net/Video3/659/78.mp4" },
+  { number: 79, title: "حلقة 79", url: "https://server.sanime.net/Video3/659/79.mp4" },
+  { number: 80, title: "حلقة 80", url: "https://server.sanime.net/Video3/659/80.mp4" },
+  { number: 81, title: "حلقة 81", url: "https://server.sanime.net/Video3/659/81.mp4" },
+  { number: 82, title: "حلقة 82", url: "https://server.sanime.net/Video3/659/82.mp4" },
+  { number: 83, title: "حلقة 83", url: "https://server.sanime.net/Video3/659/83.mp4" },
+  { number: 84, title: "حلقة 84", url: "https://server.sanime.net/Video3/659/84.mp4" },
+  { number: 85, title: "حلقة 85", url: "https://server.sanime.net/Video3/659/85.mp4" },
+  { number: 86, title: "حلقة 86", url: "https://server.sanime.net/Video3/659/86.mp4" },
+  { number: 87, title: "حلقة 87", url: "https://server.sanime.net/Video3/659/87.mp4" },
+  { number: 88, title: "حلقة 88", url: "https://server.sanime.net/Video3/659/88.mp4" },
+  { number: 89, title: "حلقة 89", url: "https://server.sanime.net/Video3/659/89.mp4" },
+  { number: 90, title: "حلقة 90", url: "https://server.sanime.net/Video3/659/90.mp4" },
+  { number: 91, title: "حلقة 91", url: "https://server.sanime.net/Video3/659/91.mp4" },
+  { number: 92, title: "حلقة 92", url: "https://server.sanime.net/Video3/659/92.mp4" },
+  { number: 93, title: "حلقة 93", url: "https://server.sanime.net/Video3/659/93.mp4" },
+  { number: 94, title: "حلقة 94", url: "https://server.sanime.net/Video3/659/94.mp4" },
+  { number: 95, title: "حلقة 95", url: "https://server.sanime.net/Video3/659/95.mp4" },
+  { number: 96, title: "حلقة 96", url: "https://server.sanime.net/Video3/659/96.mp4" },
+  { number: 97, title: "حلقة 97", url: "https://server.sanime.net/Video3/659/97.mp4" },
+  { number: 98, title: "حلقة 98", url: "https://server.sanime.net/Video3/659/98.mp4" },
+  { number: 99, title: "حلقة 99", url: "https://server.sanime.net/Video3/659/99.mp4" },
+  { number: 100, title: "حلقة 100", url: "https://server.sanime.net/Video3/659/100.mp4" },
+  { number: 101, title: "حلقة 101", url: "https://server.sanime.net/Video3/659/101.mp4" },
+  { number: 102, title: "حلقة 102", url: "https://server.sanime.net/Video3/659/102.mp4" },
+  { number: 103, title: "حلقة 103", url: "https://server.sanime.net/Video3/659/103.mp4" },
+  { number: 104, title: "حلقة 104", url: "https://server.sanime.net/Video3/659/104.mp4" },
+  { number: 105, title: "حلقة 105", url: "https://server.sanime.net/Video3/659/105.mp4" },
+  { number: 106, title: "حلقة 106", url: "https://server.sanime.net/Video3/659/106.mp4" },
+  { number: 107, title: "حلقة 107", url: "https://server.sanime.net/Video3/659/107.mp4" },
+  { number: 108, title: "حلقة 108", url: "https://server.sanime.net/Video3/659/108.mp4" },
+  { number: 109, title: "حلقة 109", url: "https://server.sanime.net/Video3/659/109.mp4" },
+  { number: 110, title: "حلقة 110", url: "https://server.sanime.net/Video3/659/110.mp4" },
+  { number: 111, title: "حلقة 111", url: "https://server.sanime.net/Video3/659/111.mp4" },
+  { number: 112, title: "حلقة 112", url: "https://server.sanime.net/Video3/659/112.mp4" },
+  { number: 113, title: "حلقة 113", url: "https://server.sanime.net/Video3/659/113.mp4" },
+  { number: 114, title: "حلقة 114", url: "https://server.sanime.net/Video3/659/114.mp4" },
+  { number: 115, title: "حلقة 115", url: "https://server.sanime.net/Video3/659/115.mp4" },
+  { number: 116, title: "حلقة 116", url: "https://server.sanime.net/Video3/659/116.mp4" },
+  { number: 117, title: "حلقة 117", url: "https://server.sanime.net/Video3/659/117.mp4" },
+  { number: 118, title: "حلقة 118", url: "https://server.sanime.net/Video3/659/118.mp4" },
+  { number: 119, title: "حلقة 119", url: "https://server.sanime.net/Video3/659/119.mp4" },
+  { number: 120, title: "حلقة 120", url: "https://server.sanime.net/Video3/659/120.mp4" },
+  { number: 121, title: "حلقة 121", url: "https://server.sanime.net/Video3/659/121.mp4" },
+  { number: 122, title: "حلقة 122", url: "https://server.sanime.net/Video3/659/122.mp4" },
+  { number: 123, title: "حلقة 123", url: "https://server.sanime.net/Video3/659/123.mp4" },
+  { number: 124, title: "حلقة 124", url: "https://server.sanime.net/Video3/659/124.mp4" },
+  { number: 125, title: "حلقة 125", url: "https://server.sanime.net/Video3/659/125.mp4" },
+  { number: 126, title: "حلقة 126", url: "https://server.sanime.net/Video3/659/126.mp4" },
+  { number: 127, title: "حلقة 127", url: "https://server.sanime.net/Video3/659/127.mp4" },
+  { number: 128, title: "حلقة 128", url: "https://server.sanime.net/Video3/659/128.mp4" },
+  { number: 129, title: "حلقة 129", url: "https://server.sanime.net/Video3/659/129.mp4" },
+  { number: 130, title: "حلقة 130", url: "https://server.sanime.net/Video3/659/130.mp4" },
+  { number: 131, title: "حلقة 131", url: "https://server.sanime.net/Video3/659/131.mp4" },
+  { number: 132, title: "حلقة 132", url: "https://server.sanime.net/Video3/659/132.mp4" },
+  { number: 133, title: "حلقة 133", url: "https://server.sanime.net/Video3/659/133.mp4" },
+  { number: 134, title: "حلقة 134", url: "https://server.sanime.net/Video3/659/134.mp4" },
+  { number: 135, title: "حلقة 135", url: "https://server.sanime.net/Video3/659/135.mp4" },
+  { number: 136, title: "حلقة 136", url: "https://server.sanime.net/Video3/659/136.mp4" },
+  { number: 137, title: "حلقة 137", url: "https://server.sanime.net/Video3/659/137.mp4" },
+  { number: 138, title: "حلقة 138", url: "https://server.sanime.net/Video3/659/138.mp4" },
+  { number: 139, title: "حلقة 139", url: "https://server.sanime.net/Video3/659/139.mp4" },
+  { number: 140, title: "حلقة 140", url: "https://server.sanime.net/Video3/659/140.mp4" },
+  { number: 141, title: "حلقة 141", url: "https://server.sanime.net/Video3/659/141.mp4" },
+  { number: 142, title: "حلقة 142", url: "https://server.sanime.net/Video3/659/142.mp4" },
+  { number: 143, title: "حلقة 143", url: "https://server.sanime.net/Video3/659/143.mp4" },
+  { number: 144, title: "حلقة 144", url: "https://server.sanime.net/Video3/659/144.mp4" },
+  { number: 145, title: "حلقة 145", url: "https://server.sanime.net/Video3/659/145.mp4" },
+  { number: 146, title: "حلقة 146", url: "https://server.sanime.net/Video3/659/146.mp4" },
+  { number: 147, title: "حلقة 147", url: "https://server.sanime.net/Video3/659/147.mp4" },
+  { number: 148, title: "حلقة 148", url: "https://server.sanime.net/Video3/659/148.mp4" },
+  { number: 149, title: "حلقة 149", url: "https://server.sanime.net/Video3/659/149.mp4" },
+  { number: 150, title: "حلقة 150", url: "https://server.sanime.net/Video3/659/150.mp4" },
+  { number: 151, title: "حلقة 151", url: "https://server.sanime.net/Video3/659/151.mp4" },
+  { number: 152, title: "حلقة 152", url: "https://server.sanime.net/Video3/659/152.mp4" },
+  { number: 153, title: "حلقة 153", url: "https://server.sanime.net/Video3/659/153.mp4" },
+  { number: 154, title: "حلقة 154", url: "https://server.sanime.net/Video3/659/154.mp4" },
+  { number: 155, title: "حلقة 155", url: "https://server.sanime.net/Video3/659/155.mp4" },
+  { number: 156, title: "حلقة 156", url: "https://server.sanime.net/Video3/659/156.mp4" },
+  { number: 157, title: "حلقة 157", url: "https://server.sanime.net/Video3/659/157.mp4" },
+  { number: 158, title: "حلقة 158", url: "https://server.sanime.net/Video3/659/158.mp4" },
+  { number: 159, title: "حلقة 159", url: "https://server.sanime.net/Video3/659/159.mp4" },
+  { number: 160, title: "حلقة 160", url: "https://server.sanime.net/Video3/659/160.mp4" },
+  { number: 161, title: "حلقة 161", url: "https://server.sanime.net/Video3/659/161.mp4" },
+  { number: 162, title: "حلقة 162", url: "https://server.sanime.net/Video3/659/162.mp4" },
+  { number: 163, title: "حلقة 163", url: "https://server.sanime.net/Video3/659/163.mp4" },
+  { number: 164, title: "حلقة 164", url: "https://server.sanime.net/Video3/659/164.mp4" },
+  { number: 165, title: "حلقة 165", url: "https://server.sanime.net/Video3/659/165.mp4" },
+  { number: 166, title: "حلقة 166", url: "https://server.sanime.net/Video3/659/166.mp4" },
+  { number: 167, title: "حلقة 167", url: "https://server.sanime.net/Video3/659/167.mp4" },
+  { number: 168, title: "حلقة 168", url: "https://server.sanime.net/Video3/659/168.mp4" },
+  { number: 169, title: "حلقة 169", url: "https://server.sanime.net/Video3/659/169.mp4" },
+  { number: 170, title: "حلقة 170", url: "https://server.sanime.net/Video3/659/170.mp4" },
+  { number: 171, title: "حلقة 171", url: "https://server.sanime.net/Video3/659/171.mp4" },
+  { number: 172, title: "حلقة 172", url: "https://server.sanime.net/Video3/659/172.mp4" },
+  { number: 173, title: "حلقة 173", url: "https://server.sanime.net/Video3/659/173.mp4" },
+  { number: 174, title: "حلقة 174", url: "https://server.sanime.net/Video3/659/174.mp4" },
+  { number: 175, title: "حلقة 175", url: "https://server.sanime.net/Video3/659/175.mp4" },
+  { number: 176, title: "حلقة 176", url: "https://server.sanime.net/Video3/659/176.mp4" },
+  { number: 177, title: "حلقة 177", url: "https://server.sanime.net/Video3/659/177.mp4" },
+  { number: 178, title: "حلقة 178", url: "https://server.sanime.net/Video3/659/178.mp4" },
+  { number: 179, title: "حلقة 179", url: "https://server.sanime.net/Video3/659/179.mp4" },
+  { number: 180, title: "حلقة 180", url: "https://server.sanime.net/Video3/659/180.mp4" },
+  { number: 181, title: "حلقة 181", url: "https://server.sanime.net/Video3/659/181.mp4" },
+  { number: 182, title: "حلقة 182", url: "https://server.sanime.net/Video3/659/182.mp4" },
+  { number: 183, title: "حلقة 183", url: "https://server.sanime.net/Video3/659/183.mp4" },
+  { number: 184, title: "حلقة 184", url: "https://server.sanime.net/Video3/659/184.mp4" },
+  { number: 185, title: "حلقة 185", url: "https://server.sanime.net/Video3/659/185.mp4" },
+  { number: 186, title: "حلقة 186", url: "https://server.sanime.net/Video3/659/186.mp4" },
+  { number: 187, title: "حلقة 187", url: "https://server.sanime.net/Video3/659/187.mp4" },
+  { number: 188, title: "حلقة 188", url: "https://server.sanime.net/Video3/659/188.mp4" },
+  { number: 189, title: "حلقة 189", url: "https://server.sanime.net/Video3/659/189.mp4" },
+  { number: 190, title: "حلقة 190", url: "https://server.sanime.net/Video3/659/190.mp4" },
+  { number: 191, title: "حلقة 191", url: "https://server.sanime.net/Video3/659/191.mp4" },
+  { number: 192, title: "حلقة 192", url: "https://server.sanime.net/Video3/659/192.mp4" },
+  { number: 193, title: "حلقة 193", url: "https://server.sanime.net/Video3/659/193.mp4" },
+  { number: 194, title: "حلقة 194", url: "https://server.sanime.net/Video3/659/194.mp4" },
+  { number: 195, title: "حلقة 195", url: "https://server.sanime.net/Video3/659/195.mp4" },
+  { number: 196, title: "حلقة 196", url: "https://server.sanime.net/Video3/659/196.mp4" },
+  { number: 197, title: "حلقة 197", url: "https://server.sanime.net/Video3/659/197.mp4" },
+  { number: 198, title: "حلقة 198", url: "https://server.sanime.net/Video3/659/198.mp4" },
+  { number: 199, title: "حلقة 199", url: "https://server.sanime.net/Video3/659/199.mp4" },
+  { number: 200, title: "حلقة 200", url: "https://server.sanime.net/Video3/659/200.mp4" },
+  { number: 201, title: "حلقة 201", url: "https://server.sanime.net/Video3/659/201.mp4" },
+  { number: 202, title: "حلقة 202", url: "https://server.sanime.net/Video3/659/202.mp4" },
+  { number: 203, title: "حلقة 203", url: "https://server.sanime.net/Video3/659/203.mp4" },
+  { number: 204, title: "حلقة 204", url: "https://server.sanime.net/Video3/659/204.mp4" },
+  { number: 205, title: "حلقة 205", url: "https://server.sanime.net/Video3/659/205.mp4" },
+  { number: 206, title: "حلقة 206", url: "https://server.sanime.net/Video3/659/206.mp4" },
+  { number: 207, title: "حلقة 207", url: "https://server.sanime.net/Video3/659/207.mp4" },
+  { number: 208, title: "حلقة 208", url: "https://server.sanime.net/Video3/659/208.mp4" },
+  { number: 209, title: "حلقة 209", url: "https://server.sanime.net/Video3/659/209.mp4" },
+  { number: 210, title: "حلقة 210", url: "https://server.sanime.net/Video3/659/210.mp4" },
+  { number: 211, title: "حلقة 211", url: "https://server.sanime.net/Video3/659/211.mp4" },
+  { number: 212, title: "حلقة 212", url: "https://server.sanime.net/Video3/659/212.mp4" },
+  { number: 213, title: "حلقة 213", url: "https://server.sanime.net/Video3/659/213.mp4" },
+  { number: 214, title: "حلقة 214", url: "https://server.sanime.net/Video3/659/214.mp4" },
+  { number: 215, title: "حلقة 215", url: "https://server.sanime.net/Video3/659/215.mp4" },
+  { number: 216, title: "حلقة 216", url: "https://server.sanime.net/Video3/659/216.mp4" },
+  { number: 217, title: "حلقة 217", url: "https://server.sanime.net/Video3/659/217.mp4" },
+  { number: 218, title: "حلقة 218", url: "https://server.sanime.net/Video3/659/218.mp4" },
+  { number: 219, title: "حلقة 219", url: "https://server.sanime.net/Video3/659/219.mp4" },
+  { number: 220, title: "حلقة 220", url: "https://server.sanime.net/Video3/659/220.mp4" },
+  { number: 221, title: "حلقة 221", url: "https://server.sanime.net/Video3/659/221.mp4" },
+  { number: 222, title: "حلقة 222", url: "https://server.sanime.net/Video3/659/222.mp4" },
+  { number: 223, title: "حلقة 223", url: "https://server.sanime.net/Video3/659/223.mp4" },
+  { number: 224, title: "حلقة 224", url: "https://server.sanime.net/Video3/659/224.mp4" },
+  { number: 225, title: "حلقة 225", url: "https://server.sanime.net/Video3/659/225.mp4" },
+  { number: 226, title: "حلقة 226", url: "https://server.sanime.net/Video3/659/226.mp4" },
+  { number: 227, title: "حلقة 227", url: "https://server.sanime.net/Video3/659/227.mp4" },
+  { number: 228, title: "حلقة 228", url: "https://server.sanime.net/Video3/659/228.mp4" },
+  { number: 229, title: "حلقة 229", url: "https://server.sanime.net/Video3/659/229.mp4" },
+  { number: 230, title: "حلقة 230", url: "https://server.sanime.net/Video3/659/230.mp4" },
+  { number: 231, title: "حلقة 231", url: "https://server.sanime.net/Video3/659/231.mp4" },
+  { number: 232, title: "حلقة 232", url: "https://server.sanime.net/Video3/659/232.mp4" },
+  { number: 233, title: "حلقة 233", url: "https://server.sanime.net/Video3/659/233.mp4" },
+  { number: 234, title: "حلقة 234", url: "https://server.sanime.net/Video3/659/234.mp4" },
+  { number: 235, title: "حلقة 235", url: "https://server.sanime.net/Video3/659/235.mp4" },
+  { number: 236, title: "حلقة 236", url: "https://server.sanime.net/Video3/659/236.mp4" },
+  { number: 237, title: "حلقة 237", url: "https://server.sanime.net/Video3/659/237.mp4" },
+  { number: 238, title: "حلقة 238", url: "https://server.sanime.net/Video3/659/238.mp4" },
+  { number: 239, title: "حلقة 239", url: "https://server.sanime.net/Video3/659/239.mp4" },
+  { number: 240, title: "حلقة 240", url: "https://server.sanime.net/Video3/659/240.mp4" },
+  { number: 241, title: "حلقة 241", url: "https://server.sanime.net/Video3/659/241.mp4" },
+  { number: 242, title: "حلقة 242", url: "https://server.sanime.net/Video3/659/242.mp4" },
+  { number: 243, title: "حلقة 243", url: "https://server.sanime.net/Video3/659/243.mp4" },
+  { number: 244, title: "حلقة 244", url: "https://server.sanime.net/Video3/659/244.mp4" },
+  { number: 245, title: "حلقة 245", url: "https://server.sanime.net/Video3/659/245.mp4" },
+  { number: 246, title: "حلقة 246", url: "https://server.sanime.net/Video3/659/246.mp4" },
+  { number: 247, title: "حلقة 247", url: "https://server.sanime.net/Video3/659/247.mp4" },
+  { number: 248, title: "حلقة 248", url: "https://server.sanime.net/Video3/659/248.mp4" },
+  { number: 249, title: "حلقة 249", url: "https://server.sanime.net/Video3/659/249.mp4" },
+  { number: 250, title: "حلقة 250", url: "https://server.sanime.net/Video3/659/250.mp4" },
+  { number: 251, title: "حلقة 251", url: "https://server.sanime.net/Video3/659/251.mp4" },
+  { number: 252, title: "حلقة 252", url: "https://server.sanime.net/Video3/659/252.mp4" },
+  { number: 253, title: "حلقة 253", url: "https://server.sanime.net/Video3/659/253.mp4" },
+  { number: 254, title: "حلقة 254", url: "https://server.sanime.net/Video3/659/254.mp4" },
+  { number: 255, title: "حلقة 255", url: "https://server.sanime.net/Video3/659/255.mp4" },
+  { number: 256, title: "حلقة 256", url: "https://server.sanime.net/Video3/659/256.mp4" },
+  { number: 257, title: "حلقة 257", url: "https://server.sanime.net/Video3/659/257.mp4" },
+  { number: 258, title: "حلقة 258", url: "https://server.sanime.net/Video3/659/258.mp4" },
+  { number: 259, title: "حلقة 259", url: "https://server.sanime.net/Video3/659/259.mp4" },
+  { number: 260, title: "حلقة 260", url: "https://server.sanime.net/Video3/659/260.mp4" },
+  { number: 261, title: "حلقة 261", url: "https://server.sanime.net/Video3/659/261.mp4" },
+  { number: 262, title: "حلقة 262", url: "https://server.sanime.net/Video3/659/262.mp4" },
+  { number: 263, title: "حلقة 263", url: "https://server.sanime.net/Video3/659/263.mp4" },
+  { number: 264, title: "حلقة 264", url: "https://server.sanime.net/Video3/659/264.mp4" },
+  { number: 265, title: "حلقة 265", url: "https://server.sanime.net/Video3/659/265.mp4" },
+  { number: 266, title: "حلقة 266", url: "https://server.sanime.net/Video3/659/266.mp4" },
+  { number: 267, title: "حلقة 267", url: "https://server.sanime.net/Video3/659/267.mp4" },
+  { number: 268, title: "حلقة 268", url: "https://server.sanime.net/Video3/659/268.mp4" },
+  { number: 269, title: "حلقة 269", url: "https://server.sanime.net/Video3/659/269.mp4" },
+  { number: 270, title: "حلقة 270", url: "https://server.sanime.net/Video3/659/270.mp4" },
+  { number: 271, title: "حلقة 271", url: "https://server.sanime.net/Video3/659/271.mp4" },
+  { number: 272, title: "حلقة 272", url: "https://server.sanime.net/Video3/659/272.mp4" },
+  { number: 273, title: "حلقة 273", url: "https://server.sanime.net/Video3/659/273.mp4" },
+  { number: 274, title: "حلقة 274", url: "https://server.sanime.net/Video3/659/274.mp4" },
+  { number: 275, title: "حلقة 275", url: "https://server.sanime.net/Video3/659/275.mp4" },
+  { number: 276, title: "حلقة 276", url: "https://server.sanime.net/Video3/659/276.mp4" },
+  { number: 277, title: "حلقة 277", url: "https://server.sanime.net/Video3/659/277.mp4" },
+  { number: 278, title: "حلقة 278", url: "https://server.sanime.net/Video3/659/278.mp4" },
+  { number: 279, title: "حلقة 279", url: "https://server.sanime.net/Video3/659/279.mp4" },
+  { number: 280, title: "حلقة 280", url: "https://server.sanime.net/Video3/659/280.mp4" },
+  { number: 281, title: "حلقة 281", url: "https://server.sanime.net/Video3/659/281.mp4" },
+  { number: 282, title: "حلقة 282", url: "https://server.sanime.net/Video3/659/282.mp4" },
+  { number: 283, title: "حلقة 283", url: "https://server.sanime.net/Video3/659/283.mp4" },
+  { number: 284, title: "حلقة 284", url: "https://server.sanime.net/Video3/659/284.mp4" },
+  { number: 285, title: "حلقة 285", url: "https://server.sanime.net/Video3/659/285.mp4" },
+  { number: 286, title: "حلقة 286", url: "https://server.sanime.net/Video3/659/286.mp4" },
+  { number: 287, title: "حلقة 287", url: "https://server.sanime.net/Video3/659/287.mp4" },
+  { number: 288, title: "حلقة 288", url: "https://server.sanime.net/Video3/659/288.mp4" },
+  { number: 289, title: "حلقة 289", url: "https://server.sanime.net/Video3/659/289.mp4" },
+  { number: 290, title: "حلقة 290", url: "https://server.sanime.net/Video3/659/290.mp4" },
+  { number: 291, title: "حلقة 291", url: "https://server.sanime.net/Video3/659/291.mp4" },
+         ]
+      },
+     {
+       id: 7,
+        title: " Your Forma",
+        image: "https://cdn.discordapp.com/attachments/1355552549268357272/1355552549502980107/MV5BMGZkNTFmMGUtODk5OC00MTU5LWIyNjMtZjBhMTEyNWVlOTZlXkEyXkFqcGc._V1_FMjpg_UX1000_.jpg?ex=68328370&is=683131f0&hm=beb019a75a4e863eb38d8466378bf848a9c656b00be1048955be9a93a17c599b&",
+        rating: 6.13,
+        description: " قصة الانمي : ",
+        episodes: [
+          { number: 1, title: "حلقة 1", url: "https://server.sanime.net/Video/11677/1.mp4" },
+          { number: 2, title: "حلقة 2", url: "https://server.sanime.net/Video/11677/2.mp4" },
+          { number: 3, title: "3 حلقة", url: "https://server.sanime.net/Video/11677/3.mp4" },
+          { number: 4, title: " حلقة 4", url: "https://server.sanime.net/Video/11677/4.mp4" },
+          { number: 5, title: "حلقة 5", url: "https://server.sanime.net/Video/11677/5.mp4" },
+          { number: 6, title: " 6 حلقة", url: "https://server.sanime.net/Video/11677/6.mp4" },
+          { number: 7, title: " حلقة 7", url: "https://server.sanime.net/Video/11677/7.mp4"},
+          { number: 8, title: "8 حلقة", url: "https://server.sanime.net/Video/11677/8.mp4" },
+        ]
+      },
+     {
+       id: 6,
+         title: "Dragon Ball ",
+         image: "https://cdn.discordapp.com/attachments/1375584914803523587/1375940102399856950/IMG_4400.jpg?ex=6834d514&is=68338394&hm=fc2061fac18bb9ccba68097103a79d1dd98f458d72e4d1634d1e2dc95ae8d8f7&",
+         rating: 8.8,
+         description: " قصة الانمي :  ",
+         episodes: [
+          
+  { number: 1, title: "حلقة 1", url: "https://server.sanime.net/Video3/658/1.mp4" },
+  { number: 2, title: "حلقة 2", url: "https://server.sanime.net/Video3/658/2.mp4" },
+  { number: 3, title: "حلقة 3", url: "https://server.sanime.net/Video3/658/3.mp4" },
+  { number: 4, title: "حلقة 4", url: "https://server.sanime.net/Video3/658/4.mp4" },
+  { number: 5, title: "حلقة 5", url: "https://server.sanime.net/Video3/658/5.mp4" },
+  { number: 6, title: "حلقة 6", url: "https://server.sanime.net/Video3/658/6.mp4" },
+  { number: 7, title: "حلقة 7", url: "https://server.sanime.net/Video3/658/7.mp4" },
+  { number: 8, title: "حلقة 8", url: "https://server.sanime.net/Video3/658/8.mp4" },
+  { number: 9, title: "حلقة 9", url: "https://server.sanime.net/Video3/658/9.mp4" },
+  { number: 10, title: "حلقة 10", url: "https://server.sanime.net/Video3/658/10.mp4" },
+  { number: 11, title: "حلقة 11", url: "https://server.sanime.net/Video3/658/11.mp4" },
+  { number: 12, title: "حلقة 12", url: "https://server.sanime.net/Video3/658/12.mp4" },
+  { number: 13, title: "حلقة 13", url: "https://server.sanime.net/Video3/658/13.mp4" },
+  { number: 14, title: "حلقة 14", url: "https://server.sanime.net/Video3/658/14.mp4" },
+  { number: 15, title: "حلقة 15", url: "https://server.sanime.net/Video3/658/15.mp4" },
+  { number: 16, title: "حلقة 16", url: "https://server.sanime.net/Video3/658/16.mp4" },
+  { number: 17, title: "حلقة 17", url: "https://server.sanime.net/Video3/658/17.mp4" },
+  { number: 18, title: "حلقة 18", url: "https://server.sanime.net/Video3/658/18.mp4" },
+  { number: 19, title: "حلقة 19", url: "https://server.sanime.net/Video3/658/19.mp4" },
+  { number: 20, title: "حلقة 20", url: "https://server.sanime.net/Video3/658/20.mp4" },
+  { number: 21, title: "حلقة 21", url: "https://server.sanime.net/Video3/658/21.mp4" },
+  { number: 22, title: "حلقة 22", url: "https://server.sanime.net/Video3/658/22.mp4" },
+  { number: 23, title: "حلقة 23", url: "https://server.sanime.net/Video3/658/23.mp4" },
+  { number: 24, title: "حلقة 24", url: "https://server.sanime.net/Video3/658/24.mp4" },
+  { number: 25, title: "حلقة 25", url: "https://server.sanime.net/Video3/658/25.mp4" },
+  { number: 26, title: "حلقة 26", url: "https://server.sanime.net/Video3/658/26.mp4" },
+  { number: 27, title: "حلقة 27", url: "https://server.sanime.net/Video3/658/27.mp4" },
+  { number: 28, title: "حلقة 28", url: "https://server.sanime.net/Video3/658/28.mp4" },
+  { number: 29, title: "حلقة 29", url: "https://server.sanime.net/Video3/658/29.mp4" },
+  { number: 30, title: "حلقة 30", url: "https://server.sanime.net/Video3/658/30.mp4" },
+  { number: 31, title: "حلقة 31", url: "https://server.sanime.net/Video3/658/31.mp4" },
+  { number: 32, title: "حلقة 32", url: "https://server.sanime.net/Video3/658/32.mp4" },
+  { number: 33, title: "حلقة 33", url: "https://server.sanime.net/Video3/658/33.mp4" },
+  { number: 34, title: "حلقة 34", url: "https://server.sanime.net/Video3/658/34.mp4" },
+  { number: 35, title: "حلقة 35", url: "https://server.sanime.net/Video3/658/35.mp4" },
+  { number: 36, title: "حلقة 36", url: "https://server.sanime.net/Video3/658/36.mp4" },
+  { number: 37, title: "حلقة 37", url: "https://server.sanime.net/Video3/658/37.mp4" },
+  { number: 38, title: "حلقة 38", url: "https://server.sanime.net/Video3/658/38.mp4" },
+  { number: 39, title: "حلقة 39", url: "https://server.sanime.net/Video3/658/39.mp4" },
+  { number: 40, title: "حلقة 40", url: "https://server.sanime.net/Video3/658/40.mp4" },
+  { number: 41, title: "حلقة 41", url: "https://server.sanime.net/Video3/658/41.mp4" },
+  { number: 42, title: "حلقة 42", url: "https://server.sanime.net/Video3/658/42.mp4" },
+  { number: 43, title: "حلقة 43", url: "https://server.sanime.net/Video3/658/43.mp4" },
+  { number: 44, title: "حلقة 44", url: "https://server.sanime.net/Video3/658/44.mp4" },
+  { number: 45, title: "حلقة 45", url: "https://server.sanime.net/Video3/658/45.mp4" },
+  { number: 46, title: "حلقة 46", url: "https://server.sanime.net/Video3/658/46.mp4" },
+  { number: 47, title: "حلقة 47", url: "https://server.sanime.net/Video3/658/47.mp4" },
+  { number: 48, title: "حلقة 48", url: "https://server.sanime.net/Video3/658/48.mp4" },
+  { number: 49, title: "حلقة 49", url: "https://server.sanime.net/Video3/658/49.mp4" },
+  { number: 50, title: "حلقة 50", url: "https://server.sanime.net/Video3/658/50.mp4" },
+  { number: 51, title: "حلقة 51", url: "https://server.sanime.net/Video3/658/51.mp4" },
+  { number: 52, title: "حلقة 52", url: "https://server.sanime.net/Video3/658/52.mp4" },
+  { number: 53, title: "حلقة 53", url: "https://server.sanime.net/Video3/658/53.mp4" },
+  { number: 54, title: "حلقة 54", url: "https://server.sanime.net/Video3/658/54.mp4" },
+  { number: 55, title: "حلقة 55", url: "https://server.sanime.net/Video3/658/55.mp4" },
+  { number: 56, title: "حلقة 56", url: "https://server.sanime.net/Video3/658/56.mp4" },
+  { number: 57, title: "حلقة 57", url: "https://server.sanime.net/Video3/658/57.mp4" },
+  { number: 58, title: "حلقة 58", url: "https://server.sanime.net/Video3/658/58.mp4" },
+  { number: 59, title: "حلقة 59", url: "https://server.sanime.net/Video3/658/59.mp4" },
+  { number: 60, title: "حلقة 60", url: "https://server.sanime.net/Video3/658/60.mp4" },
+  { number: 61, title: "حلقة 61", url: "https://server.sanime.net/Video3/658/61.mp4" },
+  { number: 62, title: "حلقة 62", url: "https://server.sanime.net/Video3/658/62.mp4" },
+  { number: 63, title: "حلقة 63", url: "https://server.sanime.net/Video3/658/63.mp4" },
+  { number: 64, title: "حلقة 64", url: "https://server.sanime.net/Video3/658/64.mp4" },
+  { number: 65, title: "حلقة 65", url: "https://server.sanime.net/Video3/658/65.mp4" },
+  { number: 66, title: "حلقة 66", url: "https://server.sanime.net/Video3/658/66.mp4" },
+  { number: 67, title: "حلقة 67", url: "https://server.sanime.net/Video3/658/67.mp4" },
+  { number: 68, title: "حلقة 68", url: "https://server.sanime.net/Video3/658/68.mp4" },
+  { number: 69, title: "حلقة 69", url: "https://server.sanime.net/Video3/658/69.mp4" },
+  { number: 70, title: "حلقة 70", url: "https://server.sanime.net/Video3/658/70.mp4" },
+  { number: 71, title: "حلقة 71", url: "https://server.sanime.net/Video3/658/71.mp4" },
+  { number: 72, title: "حلقة 72", url: "https://server.sanime.net/Video3/658/72.mp4" },
+  { number: 73, title: "حلقة 73", url: "https://server.sanime.net/Video3/658/73.mp4" },
+  { number: 74, title: "حلقة 74", url: "https://server.sanime.net/Video3/658/74.mp4" },
+  { number: 75, title: "حلقة 75", url: "https://server.sanime.net/Video3/658/75.mp4" },
+  { number: 76, title: "حلقة 76", url: "https://server.sanime.net/Video3/658/76.mp4" },
+  { number: 77, title: "حلقة 77", url: "https://server.sanime.net/Video3/658/77.mp4" },
+  { number: 78, title: "حلقة 78", url: "https://server.sanime.net/Video3/658/78.mp4" },
+  { number: 79, title: "حلقة 79", url: "https://server.sanime.net/Video3/658/79.mp4" },
+  { number: 80, title: "حلقة 80", url: "https://server.sanime.net/Video3/658/80.mp4" },
+  { number: 81, title: "حلقة 81", url: "https://server.sanime.net/Video3/658/81.mp4" },
+  { number: 82, title: "حلقة 82", url: "https://server.sanime.net/Video3/658/82.mp4" },
+  { number: 83, title: "حلقة 83", url: "https://server.sanime.net/Video3/658/83.mp4" },
+  { number: 84, title: "حلقة 84", url: "https://server.sanime.net/Video3/658/84.mp4" },
+  { number: 85, title: "حلقة 85", url: "https://server.sanime.net/Video3/658/85.mp4" },
+  { number: 86, title: "حلقة 86", url: "https://server.sanime.net/Video3/658/86.mp4" },
+  { number: 87, title: "حلقة 87", url: "https://server.sanime.net/Video3/658/87.mp4" },
+  { number: 88, title: "حلقة 88", url: "https://server.sanime.net/Video3/658/88.mp4" },
+  { number: 89, title: "حلقة 89", url: "https://server.sanime.net/Video3/658/89.mp4" },
+  { number: 90, title: "حلقة 90", url: "https://server.sanime.net/Video3/658/90.mp4" },
+  { number: 91, title: "حلقة 91", url: "https://server.sanime.net/Video3/658/91.mp4" },
+  { number: 92, title: "حلقة 92", url: "https://server.sanime.net/Video3/658/92.mp4" },
+  { number: 93, title: "حلقة 93", url: "https://server.sanime.net/Video3/658/93.mp4" },
+  { number: 94, title: "حلقة 94", url: "https://server.sanime.net/Video3/658/94.mp4" },
+  { number: 95, title: "حلقة 95", url: "https://server.sanime.net/Video3/658/95.mp4" },
+  { number: 96, title: "حلقة 96", url: "https://server.sanime.net/Video3/658/96.mp4" },
+  { number: 97, title: "حلقة 97", url: "https://server.sanime.net/Video3/658/97.mp4" },
+  { number: 98, title: "حلقة 98", url: "https://server.sanime.net/Video3/658/98.mp4" },
+  { number: 99, title: "حلقة 99", url: "https://server.sanime.net/Video3/658/99.mp4" },
+  { number: 100, title: "حلقة 100", url: "https://server.sanime.net/Video3/658/100.mp4" },
+  { number: 101, title: "حلقة 101", url: "https://server.sanime.net/Video3/658/101.mp4" },
+  { number: 102, title: "حلقة 102", url: "https://server.sanime.net/Video3/658/102.mp4" },
+  { number: 103, title: "حلقة 103", url: "https://server.sanime.net/Video3/658/103.mp4" },
+  { number: 104, title: "حلقة 104", url: "https://server.sanime.net/Video3/658/104.mp4" },
+  { number: 105, title: "حلقة 105", url: "https://server.sanime.net/Video3/658/105.mp4" },
+  { number: 106, title: "حلقة 106", url: "https://server.sanime.net/Video3/658/106.mp4" },
+  { number: 107, title: "حلقة 107", url: "https://server.sanime.net/Video3/658/107.mp4" },
+  { number: 108, title: "حلقة 108", url: "https://server.sanime.net/Video3/658/108.mp4" },
+  { number: 109, title: "حلقة 109", url: "https://server.sanime.net/Video3/658/109.mp4" },
+  { number: 110, title: "حلقة 110", url: "https://server.sanime.net/Video3/658/110.mp4" },
+  { number: 111, title: "حلقة 111", url: "https://server.sanime.net/Video3/658/111.mp4" },
+  { number: 112, title: "حلقة 112", url: "https://server.sanime.net/Video3/658/112.mp4" },
+  { number: 113, title: "حلقة 113", url: "https://server.sanime.net/Video3/658/113.mp4" },
+  { number: 114, title: "حلقة 114", url: "https://server.sanime.net/Video3/658/114.mp4" },
+  { number: 115, title: "حلقة 115", url: "https://server.sanime.net/Video3/658/115.mp4" },
+  { number: 116, title: "حلقة 116", url: "https://server.sanime.net/Video3/658/116.mp4" },
+  { number: 117, title: "حلقة 117", url: "https://server.sanime.net/Video3/658/117.mp4" },
+  { number: 118, title: "حلقة 118", url: "https://server.sanime.net/Video3/658/118.mp4" },
+  { number: 119, title: "حلقة 119", url: "https://server.sanime.net/Video3/658/119.mp4" },
+  { number: 120, title: "حلقة 120", url: "https://server.sanime.net/Video3/658/120.mp4" },
+  { number: 121, title: "حلقة 121", url: "https://server.sanime.net/Video3/658/121.mp4" },
+  { number: 122, title: "حلقة 122", url: "https://server.sanime.net/Video3/658/122.mp4" },
+  { number: 123, title: "حلقة 123", url: "https://server.sanime.net/Video3/658/123.mp4" },
+  { number: 124, title: "حلقة 124", url: "https://server.sanime.net/Video3/658/124.mp4" },
+  { number: 125, title: "حلقة 125", url: "https://server.sanime.net/Video3/658/125.mp4" },
+  { number: 126, title: "حلقة 126", url: "https://server.sanime.net/Video3/658/126.mp4" },
+  { number: 127, title: "حلقة 127", url: "https://server.sanime.net/Video3/658/127.mp4" },
+  { number: 128, title: "حلقة 128", url: "https://server.sanime.net/Video3/658/128.mp4" },
+  { number: 129, title: "حلقة 129", url: "https://server.sanime.net/Video3/658/129.mp4" },
+  { number: 130, title: "حلقة 130", url: "https://server.sanime.net/Video3/658/130.mp4" },
+  { number: 131, title: "حلقة 131", url: "https://server.sanime.net/Video3/658/131.mp4" },
+  { number: 132, title: "حلقة 132", url: "https://server.sanime.net/Video3/658/132.mp4" },
+  { number: 133, title: "حلقة 133", url: "https://server.sanime.net/Video3/658/133.mp4" },
+  { number: 134, title: "حلقة 134", url: "https://server.sanime.net/Video3/658/134.mp4" },
+  { number: 135, title: "حلقة 135", url: "https://server.sanime.net/Video3/658/135.mp4" },
+  { number: 136, title: "حلقة 136", url: "https://server.sanime.net/Video3/658/136.mp4" },
+  { number: 137, title: "حلقة 137", url: "https://server.sanime.net/Video3/658/137.mp4" },
+  { number: 138, title: "حلقة 138", url: "https://server.sanime.net/Video3/658/138.mp4" },
+  { number: 139, title: "حلقة 139", url: "https://server.sanime.net/Video3/658/139.mp4" },
+  { number: 140, title: "حلقة 140", url: "https://server.sanime.net/Video3/658/140.mp4" },
+  { number: 141, title: "حلقة 141", url: "https://server.sanime.net/Video3/658/141.mp4" },
+  { number: 142, title: "حلقة 142", url: "https://server.sanime.net/Video3/658/142.mp4" },
+  { number: 143, title: "حلقة 143", url: "https://server.sanime.net/Video3/658/143.mp4" },
+  { number: 144, title: "حلقة 144", url: "https://server.sanime.net/Video3/658/144.mp4" },
+  { number: 145, title: "حلقة 145", url: "https://server.sanime.net/Video3/658/145.mp4" },
+  { number: 146, title: "حلقة 146", url: "https://server.sanime.net/Video3/658/146.mp4" },
+  { number: 147, title: "حلقة 147", url: "https://server.sanime.net/Video3/658/147.mp4" },
+  { number: 148, title: "حلقة 148", url: "https://server.sanime.net/Video3/658/148.mp4" },
+  { number: 149, title: "حلقة 149", url: "https://server.sanime.net/Video3/658/149.mp4" },
+  { number: 150, title: "حلقة 150", url: "https://server.sanime.net/Video3/658/150.mp4" },
+  { number: 151, title: "حلقة 151", url: "https://server.sanime.net/Video3/658/151.mp4" },
+  { number: 152, title: "حلقة 152", url: "https://server.sanime.net/Video3/658/152.mp4" },
+  { number: 153, title: "حلقة 153", url: "https://server.sanime.net/Video3/658/153.mp4" },
+     
+    ]
+      },
+     {
+       id: 9,
+        title: " The Super Cube (Chao Neng Lifang: Chaofan Pian) ",
+        image: "https://cdn.discordapp.com/attachments/1375584914803523587/1376218796892753961/IMG_4406.png?ex=68348722&is=683335a2&hm=5438a0cdde8ae52a2692539b8b86d901a0a14c89b6bf0d0533fa6473b08667e5&",
+        rating: 9.0,
+        description: "قصة الانمي : القصة تتحدث عن صبي يكتسب قوة من مكعب غامض فتتغير حياته بعدها",
+        episodes: [
+          { number: 1, title: "حلقة 1", url: "https://server.sanime.net/Video/11677/1.mp4" },
+          { number: 2, title: "حلقة 2", url: "https://server.sanime.net/Video/11677/2.mp4" },
+          { number: 3, title: "3 حلقة", url: "https://server.sanime.net/Video/11677/3.mp4" },
+        ]
+      }
+    ];
+    
+        let filteredAnime = [...animeData];
+
+        function displayAnime(animes) {
+            const grid = document.getElementById('animeGrid');
+            grid.innerHTML = '';
+
+            animes.forEach(anime => {
+                const card = document.createElement('div');
+                card.className = 'anime-card';
+                card.onclick = () => showAnimeDetail(anime);
+
+                const stars = '★'.repeat(Math.floor(anime.rating / 2)) + '☆'.repeat(5 - Math.floor(anime.rating / 2));
+
+                card.innerHTML = `
+                    <img class="anime-image" src="${anime.image}" alt="${anime.title}" onerror="this.src='https://via.placeholder.com/300x400/333/fff?text=Image+Not+Available'" loading="lazy">
+                    <div class="anime-info">
+                        <div class="anime-title">${anime.title}</div>
+                        <div class="anime-rating">
+                            <span class="stars">${stars}</span>
+                            <span class="rating-number">${anime.rating}</span>
+                        </div>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        function showAnimeDetail(anime) {
+            document.getElementById('detailImage').src = anime.image;
+            document.getElementById('detailTitle').textContent = anime.title;
+            document.getElementById('detailDescription').textContent = anime.description;
+            
+            const stars = '★'.repeat(Math.floor(anime.rating / 2)) + '☆'.repeat(5 - Math.floor(anime.rating / 2));
+            document.getElementById('detailRating').innerHTML = `
+                <span class="stars">${stars}</span>
+                <span class="rating-number">${anime.rating}</span>
+            `;
+
+            const episodesGrid = document.getElementById('episodesGrid');
+            episodesGrid.innerHTML = '';
+
+            anime.episodes.forEach(episode => {
+                const episodeContainer = document.createElement('div');
+                
+                const episodeCard = document.createElement('div');
+                episodeCard.className = 'episode-card';
+                episodeCard.id = `episode-${episode.number}`;
+                episodeCard.onclick = () => toggleEpisode(episode, episodeCard);
+
+                episodeCard.innerHTML = `
+                    <div class="episode-title">${episode.title}</div>
+                    <div>Episode ${episode.number}</div>
+                `;
+
+                const videoContainer = document.createElement('div');
+                videoContainer.className = 'video-container';
+                videoContainer.id = `video-${episode.number}`;
+
+                episodeContainer.appendChild(episodeCard);
+                episodeContainer.appendChild(videoContainer);
+                episodesGrid.appendChild(episodeContainer);
+            });
+
+            document.getElementById('animeDetail').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDetail() {
+            document.getElementById('animeDetail').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function toggleEpisode(episode, episodeCard) {
+            const videoContainer = document.getElementById(`video-${episode.number}`);
+            const allVideoContainers = document.querySelectorAll('.video-container');
+            const allEpisodeCards = document.querySelectorAll('.episode-card');
+            
+            // إخفاء جميع الفيديوهات الأخرى وإزالة التفعيل
+            allVideoContainers.forEach(container => {
+                if (container.id !== `video-${episode.number}`) {
+                    container.style.display = 'none';
+                    container.innerHTML = '';
+                }
+            });
+            
+            allEpisodeCards.forEach(card => {
+                if (card.id !== `episode-${episode.number}`) {
+                    card.classList.remove('active');
+                }
+            });
+            
+            // تبديل حالة الفيديو الحالي
+            if (videoContainer.style.display === 'block') {
+                videoContainer.style.display = 'none';
+                videoContainer.innerHTML = '';
+                episodeCard.classList.remove('active');
+            } else {
+                videoContainer.style.display = 'block';
+                episodeCard.classList.add('active');
+                
+                // إضافة مؤشر تحميل
+                videoContainer.innerHTML = '<div class="video-loading">Loading video...</div>';
+                
+                setTimeout(() => {
+                    if (episode.url.includes('drive.google.com')) {
+                        const fileId = episode.url.match(/\/d\/(.+?)\//)[1];
+                        const embedUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+                        videoContainer.innerHTML = `
+                            <iframe 
+                                src="${embedUrl}" 
+                                allowfullscreen
+                                allow="autoplay; encrypted-media"
+                                frameborder="0"
+                                scrolling="no">
+                            </iframe>`;
+                    } else if (!episode.url.includes('example.com')) {
+                        videoContainer.innerHTML = `
+                            <iframe 
+                                src="${episode.url}" 
+                                allowfullscreen
+                                allow="autoplay; encrypted-media"
+                                frameborder="0"
+                                scrolling="no">
+                            </iframe>`;
+                    } else {
+                        videoContainer.innerHTML = `
+                            <div style="padding: 2rem; text-align: center; color: #ff6b6b; background: #2a2a3e; border-radius: 10px;">
+                                <h3>Demo Episode</h3>
+                                <p>This is a demo link. In the real website, the episode will play here.</p>
+                                <div style="margin-top: 1rem; padding: 1rem; background: #1a1a2e; border-radius: 5px;">
+                                    <strong>Episode ${episode.number}: ${episode.title}</strong>
+                                </div>
+                            </div>`;
+                    }
+                }, 500);
+            }
+        }
+
+        function watchEpisode(url) {
+            if (url.includes('example.com')) {
+                alert('هذا رابط تجريبي. في الموقع الحقيقي سيتم تشغيل الحلقة.');
+            } else if (url.includes('drive.google.com')) {
+                // تحويل رابط Google Drive للمشاهدة المباشرة
+                const fileId = url.match(/\/d\/(.+?)\//)[1];
+                const directUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+                window.open(directUrl, '_blank');
+            } else {
+                window.open(url, '_blank');
+            }
+        }
+
+        function searchAnime() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            filteredAnime = animeData.filter(anime => 
+                anime.title.toLowerCase().includes(searchTerm)
+            );
+            displayAnime(filteredAnime);
+        }
+
+        document.getElementById('searchBox').addEventListener('input', searchAnime);
+
+        // إغلاق النافذة التفصيلية عند الضغط خارجها
+        document.getElementById('animeDetail').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDetail();
+            }
+        });
+
+        // عرض الانمي عند تحميل الصفحة
+        displayAnime(animeData);
+
+        // إضافة تأثيرات تفاعلية
+        document.addEventListener('DOMContentLoaded', function() {
+            // تأثير التحميل
+            setTimeout(() => {
+                document.querySelectorAll('.anime-card').forEach((card, index) => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(50px)';
+                    setTimeout(() => {
+                        card.style.transition = 'all 0.5s ease';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+            }, 100);
+        });
+
+        // رابط الحلقة الأولى من Wistoria
+        console.log('https://drive.google.com/file/d/1v4KJdOF-7IAwuBwPNmWYN8WCCpHi7O7g/view?usp=drivesdk');
+    </script>
+</body>
+</html>
